@@ -30,10 +30,16 @@
         - vim
       become: yes
 
-    - name: install packages
+    - name: Add NTP Servers to proper location
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/rhel8-aws-ntp-client.j2"
         dest: /tmp/rhel8-aws-ntp-client.conf
+      become: yes
+
+    - name: Restart NTP Client
+      ansible.builtin.service:
+        name: chrony
+        state: restarted
       become: yes
 
     # - name: Download Ansible Tower
