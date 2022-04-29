@@ -15,11 +15,11 @@
     #     auto_attach: true
     #   become: yes
 
-    - name: upgrade all packages
-      yum:
-        name: '*'
-        state: latest
-      become: yes
+    # - name: upgrade all packages
+    #   yum:
+    #     name: '*'
+    #     state: latest
+    #   become: yes
 
     - name: install packages
       yum:
@@ -27,6 +27,7 @@
       vars:
         packages:
         - chrony
+        - vim
       become: yes
 
     # - name: Download Ansible Tower
