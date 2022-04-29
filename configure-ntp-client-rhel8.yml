@@ -30,11 +30,21 @@
         - vim
       become: yes
 
+    - name: Ensure NTP Client is running
+      ansible.builtin.service:
+        name: chronyd
+        state: started
+      become: yes
+
     - name: Add NTP Servers to proper location
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/rhel8-aws-ntp-client.j2"
         dest: /tmp/rhel8-aws-ntp-client.conf
       become: yes
+      notify:
+      - Restart NTP Client
+
+  handlers:
 
     - name: Restart NTP Client
       ansible.builtin.service:
