@@ -38,7 +38,7 @@
 
     - name: Restart NTP Client
       ansible.builtin.service:
-        name: chrony
+        name: chronyd
         state: restarted
       become: yes
 
