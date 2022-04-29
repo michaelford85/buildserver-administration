@@ -22,12 +22,18 @@
     #   become: yes
 
     - name: install packages
-      yum:
+      ansible.builtin.yum:
         name: "{{ packages }}"
       vars:
         packages:
         - chrony
         - vim
+      become: yes
+
+    - name: install packages
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/rhel8-aws-ntp-client.j2"
+        dest: /tmp/rhel8-aws-ntp-client.conf
       become: yes
 
     # - name: Download Ansible Tower
