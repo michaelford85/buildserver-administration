@@ -7,14 +7,6 @@
 
   tasks:
 
-    # - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Linux Server
-    #   redhat_subscription:
-    #     state: present
-    #     activationkey: "{{ rhactivationkey }}"
-    #     org_id: "{{ rhorg_id }}"
-    #     auto_attach: true
-    #   become: yes
-
     - name: Install subscription-manager
       ansible.builtin.yum:
         name: "{{ packages }}"
