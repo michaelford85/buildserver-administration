@@ -39,7 +39,7 @@
     - name: Add NTP Servers to proper location
       ansible.builtin.template:
         src: "{{ playbook_dir }}/templates/rhel8-aws-ntp-client.j2"
-        dest: /tmp/rhel8-aws-ntp-client.conf
+        dest: /etc/chrony.conf
       become: yes
       notify:
       - Restart NTP Client
