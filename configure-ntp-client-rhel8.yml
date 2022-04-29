@@ -7,19 +7,37 @@
 
   tasks:
 
+    # - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Linux Server
+    #   redhat_subscription:
+    #     state: present
+    #     activationkey: "{{ rhactivationkey }}"
+    #     org_id: "{{ rhorg_id }}"
+    #     auto_attach: true
+    #   become: yes
+
+    - name: Install subscription-manager
+      ansible.builtin.yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - subscription-manager
+        - subscription-manager-migration
+        - subscription-manager-migration-data
+      become: yes
+
     - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Linux Server
-      redhat_subscription:
+      community.general.redhat_subscription:
         state: present
         activationkey: "{{ rhactivationkey }}"
         org_id: "{{ rhorg_id }}"
         auto_attach: true
       become: yes
 
-    - name: upgrade all packages
-      yum:
-        name: '*'
-        state: latest
-      become: yes
+    # - name: upgrade all packages
+    #   yum:
+    #     name: '*'
+    #     state: latest
+    #   become: yes
 
     - name: install packages
       ansible.builtin.yum:
