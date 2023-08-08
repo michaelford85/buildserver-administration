@@ -1,5 +1,5 @@
 [buildserver]
-server ansible_host=x.x.x.x
+server ansible_host=x.x.x.x 
 
 [buildserver:vars]
 ansible_user=rocky
