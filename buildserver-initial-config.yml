@@ -1,0 +1,42 @@
+---
+- name: Set up Build Server Ansible Development
+  hosts: buildserver
+  gather_facts: no
+  vars_files:
+    - ./vars/default-vars.yml
+
+  tasks:
+
+    - name: upgrade all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+      become: yes
+
+    - name: install packages
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+      loop: "{{ linux_packages }}"
+      become: yes
+
+    - name: Create git-workspace directory
+      ansible.builtin.file:
+        path: "~/git-workspace"
+        state: directory
+
+    - name: Create venvs directory
+      ansible.builtin.file:
+        path: "~/venvs"
+        state: directory
+
+
+    - name: Install virtualenv via pip
+      ansible.builtin.pip:
+        name: virtualenv
+        executable: pip3
+
+    - name: Set up Virtual Environment and Install Ansible Core
+      ansible.builtin.pip: 
+        name: "ansible-core=={{ ansible_core_version }}"
+        virtualenv: /home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/venvs/ansiblecore{{ ansible_core_version_underscore }}
+        # executable: pip3

@@ -1,1 +1,1 @@
-# rhel-administration
+# buildserver-administration

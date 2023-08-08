@@ -1,6 +1,6 @@
-[rhel]
-1.1.1.1
+[buildserver]
+server ansible_host=x.x.x.x
 
-[rhel:vars]
-;ansible_user=ec2-user
-;ansible_ssh_private_key_file=~/.ssh/mford-useast-1-key.pem
+[buildserver:vars]
+ansible_user=rocky
+ansible_ssh_private_key_file=~/.ssh/mford-useast-1-key.pem

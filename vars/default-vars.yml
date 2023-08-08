@@ -1,3 +1,8 @@
 ---
-email: email@email.com
-cert_domain: tower.ansible.com
+linux_packages:
+  - vim
+  - git
+  - python3-pip
+
+ansible_core_version: "2.11.12"
+ansible_core_version_underscore: "2_11_12"
