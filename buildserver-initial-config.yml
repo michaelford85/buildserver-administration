@@ -7,6 +7,10 @@
 
   tasks:
 
+    - name: Wait 600 seconds for target connection to become reachable/usable
+      ansible.builtin.wait_for_connection:
+      delay: 15
+
     - name: upgrade all packages
       ansible.builtin.dnf:
         name: '*'
@@ -21,12 +25,12 @@
 
     - name: Create git-workspace directory
       ansible.builtin.file:
-        path: "~/git-workspace"
+        path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}//git-workspace"
         state: directory
 
     - name: Create venvs directory
       ansible.builtin.file:
-        path: "~/venvs"
+        path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}//venvs"
         state: directory
 
 
@@ -39,4 +43,11 @@
       ansible.builtin.pip: 
         name: "ansible-core=={{ ansible_core_version }}"
         virtualenv: /home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/venvs/ansiblecore{{ ansible_core_version_underscore }}
-        # executable: pip3
+    
+    - name: Clone git repositories
+      ansible.builtin.git:
+        repo: "{{ item.repo_name }}"
+        version: "{{ item.repo_branch }}"
+        dest: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/git-workspace/{{ item.dest_name }}"
+      loop: "{{ git_repositories }}"
+
