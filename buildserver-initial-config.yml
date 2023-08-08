@@ -16,6 +16,25 @@
         name: '*'
         state: latest
       become: yes
+    
+    - name: Determine whether /etc/yum.repos.d/kubernetes.repo exists
+      ansible.builtin.stat:
+        path: /etc/yum.repos.d/kubernetes.repo
+      register: k8s_repo_file
+
+    # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
+    - name: Add Kubernetes Repo
+      ansible.builtin.shell: |
+        cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+        [kubernetes]
+        name=Kubernetes
+        baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        EOF
+      become: yes
+      when: not k8s_repo_file.stat.exists
 
     - name: install packages
       ansible.builtin.dnf:
@@ -45,9 +64,6 @@
         virtualenv: /home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/venvs/ansiblecore{{ ansible_core_version_underscore }}
     
     - name: Clone git repositories
-      ansible.builtin.git:
-        repo: "{{ item.repo_name }}"
-        version: "{{ item.repo_branch }}"
-        dest: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/git-workspace/{{ item.dest_name }}"
+      ansible.builtin.include_tasks: tasks/clone-git-repos.yml
       loop: "{{ git_repositories }}"
 

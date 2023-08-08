@@ -3,14 +3,15 @@ linux_packages:
   - vim
   - git
   - python3-pip
+  - kubectl
 
 ansible_core_version: "2.11.12"
 ansible_core_version_underscore: "2_11_12"
 
 git_repositories:
-  - repo_name: https://github/username/repo1.git
+  - repo_name: https://github.com/username/repo1.git
     repo_branch: main
-    dest_name: local-folder
-  - repo_name: https://github/username/repo1.git
+    dest_name: localfile
+  - repo_name: https://github.com/username/repo2.git
     repo_branch: main
-    dest_name: local-folder
+    dest_name: localfile

@@ -1,0 +1,11 @@
+- name: "Determine whether git repo {{ item.dest_name }} exists"
+  ansible.builtin.stat:
+    path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/git-workspace/{{ item.dest_name }}"
+  register: k8s_repo_directory
+  
+- name: Clone repo
+  ansible.builtin.git:
+    repo: "{{ item.repo_name }}"
+    version: "{{ item.repo_branch }}"
+    dest: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/git-workspace/{{ item.dest_name }}"
+  when: not k8s_repo_directory.stat.exists
