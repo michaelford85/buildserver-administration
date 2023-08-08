@@ -4,7 +4,7 @@ linux_packages:
   - git
   - python3-pip
   - kubectl
-  - google-cloud-cli
+  - google-cloud-sdk-gke-gcloud-auth-plugin
 
 ansible_core_version: "2.11.12"
 ansible_core_version_underscore: "2_11_12"
