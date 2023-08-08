@@ -6,3 +6,7 @@ linux_packages:
 
 ansible_core_version: "2.11.12"
 ansible_core_version_underscore: "2_11_12"
+
+git_repositories:
+  - https://github.com/username/repo1.git
+  - https://github.com/username/repo1.git
