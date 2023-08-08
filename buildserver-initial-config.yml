@@ -21,6 +21,7 @@
       ansible.builtin.stat:
         path: /etc/yum.repos.d/kubernetes.repo
       register: k8s_repo_file
+      become: yes
 
     # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
     - name: Add Kubernetes Repo
@@ -35,6 +36,27 @@
         EOF
       become: yes
       when: not k8s_repo_file.stat.exists
+
+    - name: Determine whether /etc/yum.repos.d/google-cloud-sdk.repo exists
+      ansible.builtin.stat:
+        path: /etc/yum.repos.d/google-cloud-sdk.repo
+      register: gcloud_sdk_repo_file
+      become: yes
+
+    # https://cloud.google.com/sdk/docs/install#rpm
+    - name: Add Google Cloud SDK Repo
+      ansible.builtin.shell: |
+        sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+        [google-cloud-cli]
+        name=Google Cloud CLI
+        baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el8-x86_64
+        enabled=1
+        gpgcheck=1
+        repo_gpgcheck=0
+        gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        EOM
+      become: yes
+      when: not gcloud_sdk_repo_file.stat.exists
 
     - name: install packages
       ansible.builtin.dnf:
