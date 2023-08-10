@@ -64,6 +64,44 @@
       loop: "{{ linux_packages }}"
       become: yes
 
+    - name: Download awscli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+      
+    - name: Create awscli directory
+      ansible.builtin.file:
+        path: /tmp/awscli
+        state: directory
+
+    - name: Unzip awscli2.zip on the target host
+      ansible.builtin.unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp/awscli
+        remote_src: yes
+    
+    - name: Check for /usr/local/bin/aws existence
+      ansible.builtin.stat:
+        path: /usr/local/bin/aws
+      register: aws_bin
+
+    - name: Ensure awscli is installed
+      ansible.builtin.shell:
+        cmd: ./aws/install
+        chdir: /tmp/awscli
+      become: yes
+      when: not aws_bin.stat.exists
+
+    - name: Delete awscli directory
+      ansible.builtin.file:
+        path: /tmp/awscli/
+        state: absent
+
+    - name: Delete awscli2.zip
+      ansible.builtin.file:
+        path: /tmp/awscli2.zip
+        state: absent
+
     - name: Create git-workspace directory
       ansible.builtin.file:
         path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}//git-workspace"
