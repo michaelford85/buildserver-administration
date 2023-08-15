@@ -5,6 +5,7 @@ linux_packages:
   - python3-pip
   - wget
   - unzip
+  - podman
   - kubectl
   - google-cloud-sdk-gke-gcloud-auth-plugin
 
