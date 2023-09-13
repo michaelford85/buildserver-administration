@@ -102,26 +102,47 @@
         path: /tmp/awscli2.zip
         state: absent
 
-    - name: Create git-workspace directory
+    - name: Create git-workspace directory for non-root user
       ansible.builtin.file:
         path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}//git-workspace"
         state: directory
+      when: hostvars[groups['buildserver'][0]].ansible_user != "root"
 
-    - name: Create venvs directory
+    - name: Create git-workspace directory for root user
+      ansible.builtin.file:
+        path: "/root/git-workspace"
+        state: directory
+      when: hostvars[groups['buildserver'][0]].ansible_user == "root"
+
+    - name: Create venvs directory for non-root user
       ansible.builtin.file:
         path: "/home/{{ hostvars[groups['buildserver'][0]].ansible_user }}//venvs"
         state: directory
+      when: hostvars[groups['buildserver'][0]].ansible_user != "root"
 
+    - name: Create venvs directory for root user
+      ansible.builtin.file:
+        path: "/root/venvs"
+        state: directory
+      when: hostvars[groups['buildserver'][0]].ansible_user == "root"
 
     - name: Install virtualenv via pip
       ansible.builtin.pip:
         name: virtualenv
         executable: pip3
 
-    - name: Set up Virtual Environment and Install Ansible Core
+    - name: Set up Virtual Environment and Install Ansible Core for non-root user
       ansible.builtin.pip: 
         name: "ansible-core=={{ ansible_core_version }}"
         virtualenv: /home/{{ hostvars[groups['buildserver'][0]].ansible_user }}/venvs/ansiblecore{{ ansible_core_version_underscore }}
+      when: hostvars[groups['buildserver'][0]].ansible_user != "root"
+
+    
+    - name: Set up Virtual Environment and Install Ansible Core for root user
+      ansible.builtin.pip: 
+        name: "ansible-core=={{ ansible_core_version }}"
+        virtualenv: "/root/venvs/ansiblecore{{ ansible_core_version_underscore }}"
+      when: hostvars[groups['buildserver'][0]].ansible_user == "root"
     
     - name: Clone git repositories
       ansible.builtin.include_tasks: tasks/clone-git-repos.yml
